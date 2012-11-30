@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GoogleLoginService</string>
+    <string name="app_developer">μg Project Team</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="account_label">Google</string>
+    <string name="account_type">com.google</string>
+    <string name="permission_password_label">Access Google password</string>
+    <string name="permission_password_description">Allow app to read your Google account password.</string>
+    <string name="activity_login_title">Add a Google Account</string>
+    <string name="activity_permission_title">Grant permissions</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
+    <string name="add_account_intro">"This will add a Google account to this device. 
+
+Note that applications may read your account's email address without notifying you!"</string>
+    <string name="username_password_before">Enter your account details here:</string>
+    <string name="username_password_after">"By signing in, you are agreeing to the Google Terms of Service, Privacy Policy, and Google Play Terms of Service.
+
+Plase note that this is not the official Google application. If you're not sure what this means, stop signing in!"</string>
+    <string name="username_password_error">Wrong username or password.</string>
+    <string name="action_text">Your device is contacting Google… This should be done in a few seconds.</string>
+    <string name="add_account_outro">The account with email address $m has been added to your device.</string>
+    <string name="ask_auth_token">The application $a wants to access the service $s using the account $m.</string>
+
+</resources>

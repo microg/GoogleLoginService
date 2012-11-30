@@ -1,0 +1,99 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.google.android.gsf.login"
+    android:versionCode="0001"
+    android:versionName="0.0.1" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="17" />
+
+    <permission
+        android:name="com.google.android.googleapps.permission.ACCESS_GOOGLE_PASSWORD"
+        android:description="@string/permission_password_description"
+        android:label="@string/permission_password_label"
+        android:protectionLevel="dangerous" />
+
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="com.google.android.googleapps.permission.ACCESS_GOOGLE_PASSWORD" />
+    <uses-permission android:name="com.google.android.googleapps.permission.GOOGLE_AUTH" />
+    <uses-permission android:name="com.google.android.googleapps.permission.GOOGLE_AUTH.ALL_SERVICES" />
+    <uses-permission android:name="com.google.android.googleapps.permission.GOOGLE_AUTH.YouTubeUser" />
+    <uses-permission android:name="com.google.android.googleapps.permission.GOOGLE_AUTH.youtube" />
+    <uses-permission android:name="com.google.android.permission.BROADCAST_DATA_MESSAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="com.google.android.providers.settings.permission.READ_GSETTINGS" />
+    <uses-permission android:name="com.google.android.providers.settings.permission.WRITE_GSETTINGS" />
+
+    <application android:label="@string/app_name" android:allowBackup="false" >
+        <service
+            android:name="com.google.android.gsf.loginservice.GoogleLoginService"
+            android:exported="true" >
+            <intent-filter android:priority="-105" >
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.google.android.gsf.action.GET_GLS" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator.customTokens"
+                android:value="1" />
+        </service>
+        <service
+            android:name="com.google.android.gsf.loginservice.TokenService"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.google.login.GetToken" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.google.android.gsf.loginservice.TestService"
+            android:exported="true"
+            android:permission="com.google.android.googleapps.permission.ACCESS_GOOGLE_PASSWORD" >
+            <intent-filter>
+                <action android:name="com.google.login.GetTokenInternal" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name="com.google.android.gsf.loginservice.GrantCredentialsPermissionActivity"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"
+            android:label="@string/activity_permission_title"
+            android:exported="true" />
+        <activity
+            android:name=".LoginActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"
+            android:label="@string/activity_login_title" />
+        <activity
+            android:name=".AccountIntroActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"
+            android:label="@string/activity_login_title" >
+            <intent-filter>
+                <action android:name="com.google.android.accounts.AccountIntro" />
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

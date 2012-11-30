@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accountPreferences="@xml/account_preferences"
+    android:accountType="@string/account_type"
+    android:customTokens="true"
+    android:icon="@drawable/account_icon"
+    android:label="@string/account_label"
+    android:smallIcon="@drawable/account_icon_small" />
