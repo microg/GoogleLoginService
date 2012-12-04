@@ -1,6 +1,5 @@
 package com.google.android.gsf.login;
 
-import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -14,73 +13,30 @@ public class LoginActionFragment extends ActionFragment {
 
 	private class ActionTask extends AsyncTask<String, Void, Integer> {
 
-		public int RESULT_ERROR_ACCOUNT = 24;
-		public int RESULT_ERROR_PARAMS = 21;
-		public int RESULT_ERROR_TOKEN = 23;
-
 		@Override
 		protected Integer doInBackground(final String... params) {
-			if (params.length < 2) {
-				Log.w(TAG, "Not enough params, we need email and password!");
-				return RESULT_ERROR_PARAMS;
-			}
 			final String email = params[0];
 			final String password = params[1];
-			if (email == null || email.isEmpty() || password == null
-					|| password.isEmpty()) {
-				Log.w(TAG, "Params should not be null or empty!");
-				return RESULT_ERROR_PARAMS;
-			}
-			String encryptedPassword = null;
-			try {
-				encryptedPassword = Crypto.encryptPassword(email,
-						password);
-			} catch (final Throwable t) {
-				Log.w(TAG, t);
-			}
-			if (encryptedPassword == null || encryptedPassword.isEmpty()) {
-				Log.w(TAG, "Could not encrypt password!");
-				encryptedPassword = null;
-			}
+			final String encryptedPassword = Crypto.encryptPassword(email,
+					password);
 
-			AndroidDataSet dataSet = getContainer().getAndroidDataSet(email);
+			final AndroidManager androidManager = new AndroidManager(
+					getActivity());
+			final AndroidDataSet dataSet = androidManager
+					.getAndroidDataSet(email);
 
-			String masterToken = null;
-			if (encryptedPassword != null) {
-				try {
-					masterToken = AndroidClient.getMasterToken(dataSet,
-							encryptedPassword, true);
-				} catch (final Throwable t) {
-					Log.w(TAG, t);
-				}
-			}
+			String masterToken = AndroidClient.getMasterToken(dataSet,
+					encryptedPassword, true);
 			if (masterToken == null || masterToken.isEmpty()) {
 				Log.w(TAG,
 						"Could not sign in using encryption, falling back to direct password mode!");
-				encryptedPassword = null;
-			}
-			if (encryptedPassword == null) {
-				try {
-					masterToken = AndroidClient.getMasterToken(dataSet,
-							password);
-				} catch (final Throwable t) {
-					Log.w(TAG, t);
+				masterToken = AndroidClient.getMasterToken(dataSet, password);
+				if (masterToken == null || masterToken.isEmpty()) {
+					Log.e(TAG, "Could not sign in!");
+					return Activity.RESULT_CANCELED;
 				}
 			}
-			if (masterToken == null || masterToken.isEmpty()) {
-				Log.w(TAG, "Could not sign in!");
-				return RESULT_ERROR_TOKEN;
-			}
-			try {
-				final AccountManager accountManager = AccountManager
-						.get(getActivity());
-				final Account account = new Account(email,
-						getString(R.string.account_type));
-				accountManager.addAccountExplicitly(account, masterToken, null);
-			} catch (final Throwable t) {
-				Log.w(TAG, t);
-				return RESULT_ERROR_ACCOUNT;
-			}
+			androidManager.addAccount(email, masterToken);
 			return Activity.RESULT_OK;
 		}
 

@@ -13,12 +13,12 @@ import android.widget.TextView;
 
 public class AuthTokenAskPermissionFragment extends LoginFragment {
 
+	private static final String highlightEnd = "</font>";
+
+	private static final String highlightStart = "<font color=\"#33B5E5\">";
 	@SuppressWarnings("unused")
 	private final static String TAG = "GoogleAskPermission";
-
 	private TextView txt;
-	private static final String highlightStart = "<font color=\"#33B5E5\">";
-	private static final String highlightEnd = "</font>";
 
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
@@ -28,25 +28,26 @@ public class AuthTokenAskPermissionFragment extends LoginFragment {
 		final String mail = getContainer().getOptions().getString(
 				AccountManager.KEY_ACCOUNT_NAME);
 		final String service = getContainer().getOptions().getString(
-				AccountManager.KEY_AUTH_TOKEN_LABEL);
+				AndroidManager.KEY_AUTH_TOKEN_TYPE);
 		final int uid = getContainer().getOptions().getInt(
 				AccountManager.KEY_CALLER_UID);
 
 		String app = null;
 		if (uid != 0) {
-			PackageManager pm = getActivity().getPackageManager();
-			String[] packages = pm.getPackagesForUid(uid);
-			for (String pkg : packages) {
+			final PackageManager pm = getActivity().getPackageManager();
+			final String[] packages = pm.getPackagesForUid(uid);
+			for (final String pkg : packages) {
 				if (pkg != null && !pkg.isEmpty()) {
 					try {
-						ApplicationInfo info = pm.getApplicationInfo(pkg, 0);
+						final ApplicationInfo info = pm.getApplicationInfo(pkg,
+								0);
 						if (info != null) {
 							app = pm.getApplicationLabel(info).toString();
 							if (app != null && !app.isEmpty()) {
 								break;
 							}
 						}
-					} catch (NameNotFoundException e) {
+					} catch (final NameNotFoundException e) {
 					}
 				}
 			}
@@ -79,7 +80,7 @@ public class AuthTokenAskPermissionFragment extends LoginFragment {
 	@Override
 	public void onNextPressed() {
 		getContainer().getOptions().putBoolean(
-				LoginActivity.KEY_FORCE_PERMISSION, true);
+				AndroidManager.KEY_FORCE_PERMISSION, true);
 		getContainer().goAuthTokenAction();
 	}
 

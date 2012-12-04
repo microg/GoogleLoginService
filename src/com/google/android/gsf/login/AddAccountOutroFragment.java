@@ -10,18 +10,18 @@ import android.widget.TextView;
 
 public class AddAccountOutroFragment extends LoginFragment {
 
+	private static final String highlightEnd = "</font>";
+	private static final String highlightStart = "<font color=\"#33B5E5\">";
 	@SuppressWarnings("unused")
 	private final static String TAG = "GoogleAddAccountOutro";
 	private TextView txt;
-	private static final String highlightStart = "<font color=\"#33B5E5\">";
-	private static final String highlightEnd = "</font>";
 
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		getContainer().hideBackButton();
 		getContainer().showOkButton();
-		String email = getContainer().getOptions().getString(
+		final String email = getContainer().getOptions().getString(
 				AccountManager.KEY_ACCOUNT_NAME);
 		txt.setText(Html.fromHtml(getString(R.string.add_account_outro)
 				.replace("$m", highlightStart + email + highlightEnd)));

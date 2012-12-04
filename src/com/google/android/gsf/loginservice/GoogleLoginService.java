@@ -15,6 +15,7 @@ import android.util.Log;
 import com.google.android.gsf.GoogleLoginCredentialsResult;
 import com.google.android.gsf.IGoogleLoginService;
 import com.google.android.gsf.LoginData;
+import com.google.android.gsf.login.AndroidManager;
 import com.google.android.gsf.login.LoginActivity;
 import com.google.android.gsf.login.R;
 
@@ -37,12 +38,12 @@ public class GoogleLoginService extends Service {
 				final Intent i = new Intent(GoogleLoginService.this,
 						LoginActivity.class);
 				i.putExtras(options);
-				i.putExtra(LoginActivity.KEY_LOGIN_ACTION,
+				i.putExtra(AndroidManager.KEY_LOGIN_ACTION,
 						LoginActivity.LOGIN_ACTION_ADD_ACCOUNT);
 				i.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE,
 						response);
 				i.putExtra(AccountManager.KEY_ACCOUNT_TYPE, accountType);
-				i.putExtra(AccountManager.KEY_AUTH_TOKEN_LABEL, authTokenType);
+				i.putExtra(AndroidManager.KEY_AUTH_TOKEN_TYPE, authTokenType);
 				final Bundle result = new Bundle();
 				result.putParcelable(AccountManager.KEY_INTENT, i);
 				return result;
@@ -77,30 +78,28 @@ public class GoogleLoginService extends Service {
 			Log.d(TAG, "AccountAuthenticatorImpl.getAuthToken");
 			if (account.type.equals(GoogleLoginService.this
 					.getString(R.string.account_type))) {
-				int uid = options.getInt("callerUid");
-				if (uid != 0) {
-					String p = accountManager.getUserData(account, "p-" + uid
-							+ "-" + authTokenType);
-					if (p != null && !p.isEmpty()) {
-						Bundle result = new Bundle();
-						result.putString(AccountManager.KEY_ACCOUNT_TYPE,
-								account.type);
-						result.putString(AccountManager.KEY_ACCOUNT_NAME,
-								account.name);
-						result.putString(AccountManager.KEY_AUTHTOKEN, p);
-						return result;
-					}
+				final int uid = options.getInt("callerUid");
+				final String authToken = androidManager.getAuthToken(
+						authTokenType, uid, account);
+				if (authToken != null) {
+					final Bundle result = new Bundle();
+					result.putString(AccountManager.KEY_ACCOUNT_TYPE,
+							account.type);
+					result.putString(AccountManager.KEY_ACCOUNT_NAME,
+							account.name);
+					result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
+					return result;
 				}
 				final Intent i = new Intent(GoogleLoginService.this,
 						LoginActivity.class);
 				i.putExtras(options);
-				i.putExtra(LoginActivity.KEY_LOGIN_ACTION,
+				i.putExtra(AndroidManager.KEY_LOGIN_ACTION,
 						LoginActivity.LOGIN_ACTION_AUTH_TOKEN);
 				i.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE,
 						response);
 				i.putExtra(AccountManager.KEY_ACCOUNT_TYPE, account.type);
 				i.putExtra(AccountManager.KEY_ACCOUNT_NAME, account.name);
-				i.putExtra(AccountManager.KEY_AUTH_TOKEN_LABEL, authTokenType);
+				i.putExtra(AndroidManager.KEY_AUTH_TOKEN_TYPE, authTokenType);
 				final Bundle result = new Bundle();
 				result.putParcelable(AccountManager.KEY_INTENT, i);
 				return result;
@@ -254,7 +253,7 @@ public class GoogleLoginService extends Service {
 	private static final String TAG = "GoogleLoginService";
 
 	private AccountAuthenticator accountAuthenticator;
-	private AccountManager accountManager;
+	private AndroidManager androidManager;
 	private LoginService loginService;
 
 	@Override
@@ -273,7 +272,7 @@ public class GoogleLoginService extends Service {
 	public void onCreate() {
 		accountAuthenticator = new AccountAuthenticator();
 		loginService = new LoginService();
-		accountManager = AccountManager.get(this);
+		androidManager = new AndroidManager(this);
 	}
 
 }

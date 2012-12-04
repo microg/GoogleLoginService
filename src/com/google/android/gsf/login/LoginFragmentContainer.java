@@ -2,14 +2,10 @@ package com.google.android.gsf.login;
 
 import android.os.Bundle;
 
-import com.google.auth.AndroidDataSet;
-
 public interface LoginFragmentContainer {
 	public void disableProgressBar();
 
 	public void enableProgressBar();
-
-	public AndroidDataSet getAndroidDataSet(String email);
 
 	public Bundle getOptions();
 

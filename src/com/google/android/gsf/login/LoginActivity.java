@@ -1,7 +1,5 @@
 package com.google.android.gsf.login;
 
-import java.util.Locale;
-
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.content.Intent;
@@ -15,13 +13,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.auth.AndroidDataSet;
-
 public class LoginActivity extends FragmentActivity implements
 		LoginFragmentContainer, OnClickListener {
-
-	public static final String KEY_FORCE_PERMISSION = "forcePermission";
-	public static final String KEY_LOGIN_ACTION = "loginAction";
 
 	public static final int LOGIN_ACTION_ADD_ACCOUNT = 1;
 	public static final int LOGIN_ACTION_AUTH_TOKEN = 2;
@@ -57,20 +50,6 @@ public class LoginActivity extends FragmentActivity implements
 	private void finishResult(final int result, final Intent intent) {
 		setResult(result, intent);
 		finish();
-	}
-
-	@Override
-	public AndroidDataSet getAndroidDataSet(final String email) {
-		final String country = getResources().getConfiguration().locale
-				.getCountry().toLowerCase(Locale.getDefault());
-		final String lang = getResources().getConfiguration().locale
-				.getLanguage().toLowerCase(Locale.getDefault());
-		final String sdkVersion = android.os.Build.VERSION.SDK_INT + "";
-		final String androidId = null;
-		Log.d(TAG, "Using country=" + country + " lang=" + lang + " sdk="
-				+ sdkVersion + " androidId=" + androidId);
-		return new AndroidDataSet(email, country, country, lang, sdkVersion,
-				androidId);
 	}
 
 	@Override
@@ -164,8 +143,9 @@ public class LoginActivity extends FragmentActivity implements
 	}
 
 	private void parseOptions() {
-		if (options.containsKey(KEY_LOGIN_ACTION)) {
-			final int action = options.getInt(KEY_LOGIN_ACTION, 0);
+		if (options.containsKey(AndroidManager.KEY_LOGIN_ACTION)) {
+			final int action = options.getInt(AndroidManager.KEY_LOGIN_ACTION,
+					0);
 			switch (action) {
 			case LOGIN_ACTION_ADD_ACCOUNT:
 				setTitle(R.string.activity_login_title);
@@ -187,8 +167,9 @@ public class LoginActivity extends FragmentActivity implements
 	public void resultAccountAdded() {
 		if (getOptions().containsKey(
 				AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)) {
-			AccountAuthenticatorResponse response = getOptions().getParcelable(
-					AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+			final AccountAuthenticatorResponse response = getOptions()
+					.getParcelable(
+							AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
 			if (response != null) {
 				response.onResult(null);
 			}
@@ -207,8 +188,9 @@ public class LoginActivity extends FragmentActivity implements
 				getOptions().getString(AccountManager.KEY_AUTHTOKEN));
 		if (getOptions().containsKey(
 				AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)) {
-			AccountAuthenticatorResponse response = getOptions().getParcelable(
-					AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+			final AccountAuthenticatorResponse response = getOptions()
+					.getParcelable(
+							AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
 			if (response != null) {
 				response.onResult(intent.getExtras());
 			}
@@ -220,8 +202,9 @@ public class LoginActivity extends FragmentActivity implements
 	public void resultCancelled() {
 		if (getOptions().containsKey(
 				AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)) {
-			AccountAuthenticatorResponse response = getOptions().getParcelable(
-					AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+			final AccountAuthenticatorResponse response = getOptions()
+					.getParcelable(
+							AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
 			if (response != null) {
 				response.onError(400, "Cancelled.");
 			}
