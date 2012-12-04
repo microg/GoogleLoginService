@@ -180,12 +180,7 @@ public class LoginActivity extends FragmentActivity implements
 	@Override
 	public void resultAuthToken() {
 		final Intent intent = new Intent();
-		intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, getOptions()
-				.getString(AccountManager.KEY_ACCOUNT_NAME));
-		intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, getOptions()
-				.getString(AccountManager.KEY_ACCOUNT_TYPE));
-		intent.putExtra(AccountManager.KEY_AUTHTOKEN,
-				getOptions().getString(AccountManager.KEY_AUTHTOKEN));
+		intent.putExtras(getOptions());
 		if (getOptions().containsKey(
 				AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)) {
 			final AccountAuthenticatorResponse response = getOptions()

@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.google.auth.AndroidClient;
+import com.google.auth.DataField;
+import com.google.auth.DataMapReader;
 
 public class AuthTokenActionFragment extends ActionFragment {
 
@@ -26,12 +28,23 @@ public class AuthTokenActionFragment extends ActionFragment {
 			String authToken = androidManager.getAuthToken(service, uid,
 					packageName, packageSignature, account);
 			if (authToken == null || forcePermission) {
-				authToken = AndroidClient.getAuthToken(
+				final DataMapReader map = AndroidClient.getAuthTokenResponse(
 						androidManager.getAndroidDataSet(email),
 						androidManager.getMasterToken(account), service,
 						packageName, packageSignature, forcePermission);
+				authToken = map.getData(DataField.AUTH_TOKEN);
 				if (authToken == null) {
 					return Activity.RESULT_CANCELED;
+				}
+				final String sid = map.getData(DataField.SID);
+				if (sid != null && !sid.isEmpty()) {
+					androidManager.putAuthToken("SID", uid, packageName,
+							packageSignature, sid, account);
+				}
+				final String lsid = map.getData(DataField.LSID);
+				if (lsid != null && !lsid.isEmpty()) {
+					androidManager.putAuthToken("LSID", uid, packageName,
+							packageSignature, lsid, account);
 				}
 				androidManager.putAuthToken(service, uid, packageName,
 						packageSignature, authToken, account);

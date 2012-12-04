@@ -21,6 +21,10 @@ public class AndroidManager {
 
 	public static String getAuthTokenStore(final String service, final int uid,
 			final String packageName, final String packageSignature) {
+		if (service.equals("SID") || service.equals("LSID")
+				|| service.equals("android") || service.equals("androidsecure")) {
+			return service;
+		}
 		return "p-" + uid + "-" + packageSignature + "-" + packageName + "-"
 				+ service;
 	}
@@ -53,11 +57,8 @@ public class AndroidManager {
 	}
 
 	private final AccountManager accountManager;
-
-	private Context context;
-
+	private final Context context;
 	private final PackageManager packageManager;
-
 	private final String type;
 
 	public AndroidManager(final AccountManager accountManager,
@@ -66,6 +67,7 @@ public class AndroidManager {
 		this.accountManager = accountManager;
 		this.packageManager = packageManager;
 		this.type = type;
+		this.context = context;
 	}
 
 	public AndroidManager(final Context context) {
@@ -157,9 +159,12 @@ public class AndroidManager {
 	public void putAuthToken(final String service, final int uid,
 			final String packageName, final String packageSignature,
 			final String authToken, final Account account) {
-		accountManager.setUserData(account,
-				getAuthTokenStore(service, uid, packageName, packageSignature),
-				authToken);
+		if (!service.startsWith("weblogin:") && uid != 0) {
+			accountManager.setUserData(
+					account,
+					getAuthTokenStore(service, uid, packageName,
+							packageSignature), authToken);
+		}
 	}
 
 }

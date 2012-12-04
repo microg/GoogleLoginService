@@ -1,5 +1,6 @@
 package com.google.android.gsf.login;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -8,6 +9,8 @@ import android.util.Log;
 import com.google.auth.AndroidClient;
 import com.google.auth.AndroidDataSet;
 import com.google.auth.Crypto;
+import com.google.auth.DataField;
+import com.google.auth.DataMapReader;
 
 public class LoginActionFragment extends ActionFragment {
 
@@ -25,25 +28,37 @@ public class LoginActionFragment extends ActionFragment {
 			final AndroidDataSet dataSet = androidManager
 					.getAndroidDataSet(email);
 
-			String masterToken = AndroidClient.getMasterToken(dataSet,
+			DataMapReader map = AndroidClient.getMasterTokenResponse(dataSet,
 					encryptedPassword, true);
+			String masterToken = map.getData(DataField.MASTER_TOKEN);
 			if (masterToken == null || masterToken.isEmpty()) {
 				Log.w(TAG,
 						"Could not sign in using encryption, falling back to direct password mode!");
-				masterToken = AndroidClient.getMasterToken(dataSet, password);
+				map = AndroidClient.getMasterTokenResponse(dataSet, password,
+						false);
+				masterToken = map.getData(DataField.MASTER_TOKEN);
 				if (masterToken == null || masterToken.isEmpty()) {
 					Log.e(TAG, "Could not sign in!");
 					return Activity.RESULT_CANCELED;
 				}
 			}
 			androidManager.addAccount(email, masterToken);
+			final Account account = androidManager.findAccount(email);
+			final String sid = map.getData(DataField.SID);
+			if (sid != null && !sid.isEmpty()) {
+				androidManager.putAuthToken("SID", 0, null, null, sid, account);
+			}
+			final String lsid = map.getData(DataField.LSID);
+			if (lsid != null && !lsid.isEmpty()) {
+				androidManager.putAuthToken("LSID", 0, null, null, lsid,
+						account);
+			}
 			return Activity.RESULT_OK;
 		}
 
 		@Override
 		protected void onPostExecute(final Integer result) {
 			super.onPostExecute(result);
-			Log.d(TAG, "Result: " + result);
 			switch (result) {
 			case Activity.RESULT_OK:
 				onNextPressed();

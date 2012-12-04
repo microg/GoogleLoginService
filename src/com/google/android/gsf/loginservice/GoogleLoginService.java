@@ -75,7 +75,8 @@ public class GoogleLoginService extends Service {
 		public Bundle getAuthToken(final AccountAuthenticatorResponse response,
 				final Account account, final String authTokenType,
 				final Bundle options) throws NetworkErrorException {
-			Log.d(TAG, "AccountAuthenticatorImpl.getAuthToken");
+			Log.d(TAG, "AccountAuthenticatorImpl.getAuthToken: "
+					+ authTokenType);
 			if (account.type.equals(GoogleLoginService.this
 					.getString(R.string.account_type))) {
 				final int uid = options.getInt("callerUid");
