@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.google.android.gsf.login"
-    android:versionCode="0001"
-    android:versionName="0.0.1" >
+    android:versionCode="0112"
+    android:versionName="0.1.12" >
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -35,7 +35,7 @@
     <uses-permission android:name="com.google.android.providers.settings.permission.READ_GSETTINGS" />
     <uses-permission android:name="com.google.android.providers.settings.permission.WRITE_GSETTINGS" />
 
-    <application android:label="@string/app_name" android:allowBackup="false" >
+    <application android:label="@string/app_name" android:allowBackup="false" android:icon="@drawable/app_icon">
         <service
             android:name="com.google.android.gsf.loginservice.GoogleLoginService"
             android:exported="true" >
