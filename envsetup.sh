@@ -16,5 +16,9 @@ USE_SUPPORT=true
 EXTRA_INCLUDES=""
 EXTRA_USES=""
 
-# Script file to be called after default script
-EXTRA_BUILD_SCRIPT=""
+# Additional compile directory [api only]
+EXTRA_COMPILE=""
+
+# Script file to be called
+BEFORE_BUILD_SCRIPT="prebuild.sh"
+AFTER_BUILD_SCRIPT=""

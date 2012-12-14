@@ -11,7 +11,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 
-import com.google.auth.AndroidDataSet;
+import com.google.android.AndroidInfo;
 
 public class AndroidManager {
 
@@ -90,14 +90,14 @@ public class AndroidManager {
 		return null;
 	}
 
-	public AndroidDataSet getAndroidDataSet(final String email) {
+	public AndroidInfo getAndroidInfo(final String email) {
 		final String country = context.getResources().getConfiguration().locale
 				.getCountry().toLowerCase(Locale.getDefault());
 		final String lang = context.getResources().getConfiguration().locale
 				.getLanguage().toLowerCase(Locale.getDefault());
-		final String sdkVersion = android.os.Build.VERSION.SDK_INT + "";
+		final int sdkVersion = android.os.Build.VERSION.SDK_INT;
 		final String androidId = null;
-		return new AndroidDataSet(email, country, country, lang, sdkVersion,
+		return new AndroidInfo(email, country, country, lang, sdkVersion,
 				androidId);
 	}
 

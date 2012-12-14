@@ -5,7 +5,7 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.os.AsyncTask;
 
-import com.google.auth.AndroidClient;
+import com.google.android.AuthClient;
 import com.google.auth.DataField;
 import com.google.auth.DataMapReader;
 
@@ -28,8 +28,8 @@ public class AuthTokenActionFragment extends ActionFragment {
 			String authToken = androidManager.getAuthToken(service, uid,
 					packageName, packageSignature, account);
 			if (authToken == null || forcePermission) {
-				final DataMapReader map = AndroidClient.getAuthTokenResponse(
-						androidManager.getAndroidDataSet(email),
+				final DataMapReader map = AuthClient.getAuthTokenResponse(
+						androidManager.getAndroidInfo(email),
 						androidManager.getMasterToken(account), service,
 						packageName, packageSignature, forcePermission);
 				authToken = map.getData(DataField.AUTH_TOKEN);

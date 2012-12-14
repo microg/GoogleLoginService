@@ -6,8 +6,8 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.auth.AndroidClient;
-import com.google.auth.AndroidDataSet;
+import com.google.android.AndroidInfo;
+import com.google.android.AuthClient;
 import com.google.auth.Crypto;
 import com.google.auth.DataField;
 import com.google.auth.DataMapReader;
@@ -25,16 +25,15 @@ public class LoginActionFragment extends ActionFragment {
 
 			final AndroidManager androidManager = new AndroidManager(
 					getActivity());
-			final AndroidDataSet dataSet = androidManager
-					.getAndroidDataSet(email);
+			final AndroidInfo dataSet = androidManager.getAndroidInfo(email);
 
-			DataMapReader map = AndroidClient.getMasterTokenResponse(dataSet,
+			DataMapReader map = AuthClient.getMasterTokenResponse(dataSet,
 					encryptedPassword, true);
 			String masterToken = map.getData(DataField.MASTER_TOKEN);
 			if (masterToken == null || masterToken.isEmpty()) {
 				Log.w(TAG,
 						"Could not sign in using encryption, falling back to direct password mode!");
-				map = AndroidClient.getMasterTokenResponse(dataSet, password,
+				map = AuthClient.getMasterTokenResponse(dataSet, password,
 						false);
 				masterToken = map.getData(DataField.MASTER_TOKEN);
 				if (masterToken == null || masterToken.isEmpty()) {
