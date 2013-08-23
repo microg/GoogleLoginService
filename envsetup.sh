@@ -11,6 +11,7 @@ TYPE=apk
 USE_JGAPI=true
 USE_MAPS=false
 USE_SUPPORT=true
+USE_GSF_INCLUDES=true
 
 # Add or use packages not from those above [apk only]
 EXTRA_INCLUDES=""
@@ -20,5 +21,5 @@ EXTRA_USES=""
 EXTRA_COMPILE=""
 
 # Script file to be called
-BEFORE_BUILD_SCRIPT="prebuild.sh"
+BEFORE_BUILD_SCRIPT=""
 AFTER_BUILD_SCRIPT=""

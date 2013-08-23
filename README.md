@@ -3,10 +3,10 @@ GoogleLoginService
 
 Clone of GoogleLoginService for Android. Part of the μg Project.
 
-This uses JGAPI (available [here](https://github.com/microg/JGAPI))
+This uses JGoogle (available [here](https://github.com/microg/JGoogle))
 
 ###License
-> Copyright 2012 μg Project Team
+> Copyright 2013 μg Project Team
 
 > Licensed under the Apache License, Version 2.0 (the "License");
 > you may not use this file except in compliance with the License.

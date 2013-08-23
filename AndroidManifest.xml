@@ -1,11 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.google.android.gsf.login"
-    android:versionCode="0200"
-    android:versionName="0.2.0" >
+    android:versionCode="0202"
+    android:versionName="0.2.2" >
 
     <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="17" />
+        android:minSdkVersion="9"
+        android:targetSdkVersion="18" />
 
     <permission
         android:name="com.google.android.googleapps.permission.ACCESS_GOOGLE_PASSWORD"
@@ -73,18 +73,21 @@
             android:name="com.google.android.gsf.loginservice.GrantCredentialsPermissionActivity"
             android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/activity_permission_title"
             android:exported="true" />
         <activity
             android:name=".LoginActivity"
             android:excludeFromRecents="true"
             android:exported="true"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"
             android:label="@string/activity_login_title" />
         <activity
             android:name=".AccountIntroActivity"
             android:exported="true"
             android:excludeFromRecents="true"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"
             android:label="@string/activity_login_title" >
             <intent-filter>

@@ -6,8 +6,9 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.AndroidAuth;
+import com.google.android.AndroidAuth.AuthType;
 import com.google.android.AndroidInfo;
-import com.google.android.AuthClient;
 import com.google.auth.Crypto;
 import com.google.auth.DataField;
 import com.google.auth.DataMapReader;
@@ -26,23 +27,30 @@ public class LoginActionFragment extends ActionFragment {
 			final AndroidManager androidManager = new AndroidManager(
 					getActivity());
 			final AndroidInfo dataSet = androidManager.getAndroidInfo(email);
-
-			DataMapReader map = AuthClient.getMasterTokenResponse(dataSet,
-					encryptedPassword, true);
-			String masterToken = map.getData(DataField.MASTER_TOKEN);
-			if (masterToken == null || masterToken.isEmpty()) {
+			DataMapReader map = AndroidAuth.getMasterTokenResponse(dataSet,
+					encryptedPassword, AuthType.EncryptedPassword);
+			String auth = map.getData(DataField.MASTER_TOKEN);
+			AuthType type = AuthType.MasterToken;
+			if (auth == null || auth.isEmpty()) {
 				Log.w(TAG,
-						"Could not sign in using encryption, falling back to direct password mode!");
-				map = AuthClient.getMasterTokenResponse(dataSet, password,
-						false);
-				masterToken = map.getData(DataField.MASTER_TOKEN);
-				if (masterToken == null || masterToken.isEmpty()) {
-					Log.e(TAG, "Could not sign in!");
-					return Activity.RESULT_CANCELED;
+						"Could not sign in using encryption, falling back to ssl-only encryption mode!");
+				map = AndroidAuth.getMasterTokenResponse(dataSet, password,
+						AuthType.Password);
+				auth = map.getData(DataField.MASTER_TOKEN);
+				if (auth == null || auth.isEmpty()) {
+					Log.e(TAG,
+							"Could not sign in using ssl-only encryption! Using password for future request instead of masterToken!");
+					auth = password;
+					type = AuthType.Password;
 				}
 			}
-			androidManager.addAccount(email, masterToken);
-			final Account account = androidManager.findAccount(email);
+			Account account = androidManager.findAccount(email);
+			if (account == null) {
+				androidManager.addAccount(email, auth, type);
+			} else {
+				androidManager.updateAccount(account, auth, type);
+			}
+			account = androidManager.findAccount(email);
 			final String sid = map.getData(DataField.SID);
 			if (sid != null && !sid.isEmpty()) {
 				androidManager.putAuthToken("SID", 0, null, null, sid, account);

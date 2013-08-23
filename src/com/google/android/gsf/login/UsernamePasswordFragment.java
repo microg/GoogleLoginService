@@ -14,10 +14,10 @@ public class UsernamePasswordFragment extends LoginFragment implements
 
 	@SuppressWarnings("unused")
 	private static final String TAG = "GoogleUsernamePassword";
-	private String email;
-	private EditText emailEdit;
-	private String password;
-	private EditText passwordEdit;
+	protected String email;
+	protected EditText emailEdit;
+	protected String password;
+	protected EditText passwordEdit;
 
 	@Override
 	public void afterTextChanged(final Editable s) {
@@ -35,7 +35,7 @@ public class UsernamePasswordFragment extends LoginFragment implements
 		// Nothing...
 	}
 
-	private boolean checkInput() {
+	protected boolean checkInput() {
 		return (email != null && email.contains("@") && password != null && !password
 				.isEmpty());
 	}
@@ -90,7 +90,7 @@ public class UsernamePasswordFragment extends LoginFragment implements
 		// Nothing...
 	}
 
-	private void readInput() {
+	protected void readInput() {
 		email = emailEdit.getText().toString();
 		password = passwordEdit.getText().toString();
 	}

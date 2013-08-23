@@ -25,6 +25,9 @@ Plase note that this is not the official Google application. If you're not sure 
     <string name="username_password_error">Wrong username or password.</string>
     <string name="action_text">Your device is contacting Google… This should be done in a few seconds.</string>
     <string name="add_account_outro">The account with email address $m has been added to your device.</string>
-    <string name="ask_auth_token">The application $a wants to access the service $s using the account $m.</string>
-
+    <string name="ask_auth_token_1">The application</string>
+    <string name="ask_auth_token_2">wants to access</string>
+    <string name="ask_auth_token_3">using the account</string>
+    <string name="ask_auth_token_remember">Always allow access for this app</string>
+    
 </resources>

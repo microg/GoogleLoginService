@@ -145,7 +145,7 @@ public class LoginActivity extends FragmentActivity implements
 	private void parseOptions() {
 		if (options.containsKey(AndroidManager.KEY_LOGIN_ACTION)) {
 			final int action = options.getInt(AndroidManager.KEY_LOGIN_ACTION,
-					0);
+					LOGIN_ACTION_ADD_ACCOUNT);
 			switch (action) {
 			case LOGIN_ACTION_ADD_ACCOUNT:
 				setTitle(R.string.activity_login_title);
@@ -258,5 +258,15 @@ public class LoginActivity extends FragmentActivity implements
 		nextButton.setVisibility(View.VISIBLE);
 		nextButton.setEnabled(true);
 		nextButton.setText(android.R.string.ok);
+	}
+
+	@Override
+	public void goReauth() {
+		goFragment(new ReauthFragment());
+	}
+
+	@Override
+	public void goReauthAction() {
+		goFragment(new ReauthActionFragment());
 	}
 }

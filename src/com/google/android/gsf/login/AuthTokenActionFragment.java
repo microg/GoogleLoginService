@@ -4,10 +4,12 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.Log;
 
-import com.google.android.AuthClient;
+import com.google.android.AndroidAuth;
 import com.google.auth.DataField;
 import com.google.auth.DataMapReader;
+import com.google.tools.Client;
 
 public class AuthTokenActionFragment extends ActionFragment {
 
@@ -18,7 +20,10 @@ public class AuthTokenActionFragment extends ActionFragment {
 			final String email = params[0];
 			final int uid = Integer.parseInt(params[1]);
 			final String service = params[2];
-			final boolean forcePermission = Boolean.parseBoolean(params[3]);
+			boolean forcePermission = Boolean.parseBoolean(params[3]);
+			Log.d(TAG, uid + " asks for permission to " + service
+					+ " using user " + email
+					+ (forcePermission ? " (forced)" : ""));
 			final AndroidManager androidManager = new AndroidManager(
 					getActivity());
 			final Account account = androidManager.findAccount(email);
@@ -28,11 +33,17 @@ public class AuthTokenActionFragment extends ActionFragment {
 			String authToken = androidManager.getAuthToken(service, uid,
 					packageName, packageSignature, account);
 			if (authToken == null || forcePermission) {
-				final DataMapReader map = AuthClient.getAuthTokenResponse(
+				if (service.startsWith("weblogin:") && !forcePermission) {
+					return Activity.RESULT_CANCELED;
+				}
+				Client.DEBUG = true;
+				final DataMapReader map = AndroidAuth.getAuthTokenResponse(
 						androidManager.getAndroidInfo(email),
-						androidManager.getMasterToken(account), service,
-						packageName, packageSignature, forcePermission);
+						androidManager.getAuth(account), service, packageName,
+						packageSignature, forcePermission,
+						androidManager.getAuthType(account));
 				authToken = map.getData(DataField.AUTH_TOKEN);
+				Client.DEBUG = false;
 				if (authToken == null) {
 					return Activity.RESULT_CANCELED;
 				}
@@ -68,7 +79,6 @@ public class AuthTokenActionFragment extends ActionFragment {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private static final String TAG = "GoogleAuthTokenAction";
 
 	private ActionTask task;
@@ -81,7 +91,11 @@ public class AuthTokenActionFragment extends ActionFragment {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		getContainer().goAuthTokenAskPermission();
+		if (getContainer().getOptions().getBoolean(AndroidManager.KEY_FORCE_PERMISSION, false)) {
+			getContainer().goReauth();
+		} else {
+			getContainer().goAuthTokenAskPermission();
+		}
 	}
 
 	@Override

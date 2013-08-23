@@ -44,4 +44,8 @@ public interface LoginFragmentContainer {
 	public void showNextButton();
 
 	public void showOkButton();
+
+	public void goReauth();
+
+	public void goReauthAction();
 }

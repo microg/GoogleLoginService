@@ -12,12 +12,15 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.google.android.AndroidAuth;
 import com.google.android.gsf.GoogleLoginCredentialsResult;
 import com.google.android.gsf.IGoogleLoginService;
 import com.google.android.gsf.LoginData;
 import com.google.android.gsf.login.AndroidManager;
 import com.google.android.gsf.login.LoginActivity;
 import com.google.android.gsf.login.R;
+import com.google.auth.DataField;
+import com.google.auth.DataMapReader;
 
 public class GoogleLoginService extends Service {
 
@@ -47,6 +50,8 @@ public class GoogleLoginService extends Service {
 				final Bundle result = new Bundle();
 				result.putParcelable(AccountManager.KEY_INTENT, i);
 				return result;
+			} else {
+				Log.d(TAG, "can't setup account for: " + accountType);
 			}
 			return null;
 		}
@@ -73,16 +78,39 @@ public class GoogleLoginService extends Service {
 
 		@Override
 		public Bundle getAuthToken(final AccountAuthenticatorResponse response,
-				final Account account, final String authTokenType,
+				final Account account, final String service,
 				final Bundle options) throws NetworkErrorException {
-			Log.d(TAG, "AccountAuthenticatorImpl.getAuthToken: "
-					+ authTokenType);
+			Log.d(TAG, "AccountAuthenticatorImpl.getAuthToken: " + service);
 			if (account.type.equals(GoogleLoginService.this
 					.getString(R.string.account_type))) {
 				final int uid = options.getInt("callerUid");
-				final String authToken = androidManager.getAuthToken(
-						authTokenType, uid, account);
+				String authToken = androidManager.getAuthToken(service, uid,
+						account);
+				if (authToken == null) {
+					final String packageName = androidManager
+							.getPackageNameForUid(uid);
+					if (packageName
+							.equalsIgnoreCase("com.google.android.apps.plus") || packageName.equalsIgnoreCase("com.android.vending") || packageName.equalsIgnoreCase("com.google.android.googlequicksearchbox")) {
+						Log.d(TAG,
+								"AccountAuthenticatorImpl.getAuthToken: empty auth token, google fallback");
+						final String packageSignature = androidManager
+								.getFirstPackageSignatureDigest(packageName);
+						final DataMapReader map = AndroidAuth
+								.getAuthTokenResponse(androidManager
+										.getAndroidInfo(account.name),
+										androidManager.getAuth(account),
+										service, packageName, packageSignature,
+										false, androidManager
+												.getAuthType(account));
+						authToken = map.getData(DataField.AUTH_TOKEN);
+						androidManager.putAuthToken(service, uid, packageName,
+								packageSignature, authToken, account);
+					}
+				}
 				if (authToken != null) {
+					Log.d(TAG,
+							"AccountAuthenticatorImpl.getAuthToken: got auth token '"
+									+ authToken + "', using it");
 					final Bundle result = new Bundle();
 					result.putString(AccountManager.KEY_ACCOUNT_TYPE,
 							account.type);
@@ -91,6 +119,8 @@ public class GoogleLoginService extends Service {
 					result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
 					return result;
 				}
+				Log.d(TAG,
+						"AccountAuthenticatorImpl.getAuthToken: no auth token, responding with intent");
 				final Intent i = new Intent(GoogleLoginService.this,
 						LoginActivity.class);
 				i.putExtras(options);
@@ -100,7 +130,7 @@ public class GoogleLoginService extends Service {
 						response);
 				i.putExtra(AccountManager.KEY_ACCOUNT_TYPE, account.type);
 				i.putExtra(AccountManager.KEY_ACCOUNT_NAME, account.name);
-				i.putExtra(AndroidManager.KEY_AUTH_TOKEN_TYPE, authTokenType);
+				i.putExtra(AndroidManager.KEY_AUTH_TOKEN_TYPE, service);
 				final Bundle result = new Bundle();
 				result.putParcelable(AccountManager.KEY_INTENT, i);
 				return result;
@@ -123,7 +153,9 @@ public class GoogleLoginService extends Service {
 			// TODO Auto-generated method stub
 			Log.w(TAG,
 					"Not yet implemented: AccountAuthenticatorImpl.hasFeatures");
-			return null;
+			Bundle b = new Bundle();
+			b.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, true);
+			return b;
 		}
 
 		@Override
