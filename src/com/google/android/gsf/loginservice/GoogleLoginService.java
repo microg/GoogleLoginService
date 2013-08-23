@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
-import com.google.android.AndroidAuth;
 import com.google.android.gsf.GoogleLoginCredentialsResult;
 import com.google.android.gsf.IGoogleLoginService;
 import com.google.android.gsf.LoginData;
@@ -74,10 +73,9 @@ public class GoogleLoginService extends Service {
 						packageName.equalsIgnoreCase("com.google.android.googlequicksearchbox")) {
 						Log.d(TAG, "AccountAuthenticatorImpl.getAuthToken: empty auth token, google fallback");
 						final String packageSignature = androidManager.getFirstPackageSignatureDigest(packageName);
-						final DataMapReader map = AndroidAuth
-								.getAuthTokenResponse(androidManager.getAndroidContext(account.name),
-													  androidManager.getAuth(account), service, packageName,
-													  packageSignature, false, androidManager.getAuthType(account));
+						final DataMapReader map = androidManager.getAndroidAuth().getAuthTokenResponse(
+								androidManager.getAndroidContext(account.name), androidManager.getAuth(account),
+								service, packageName, packageSignature, false, androidManager.getAuthType(account));
 						authToken = map.getData(DataField.AUTH_TOKEN);
 						androidManager.putAuthToken(service, uid, packageName, packageSignature, authToken, account);
 					}

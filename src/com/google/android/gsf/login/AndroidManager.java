@@ -147,7 +147,7 @@ public class AndroidManager {
 	}
 
 	public AndroidContext getAndroidContext(String email) {
-		return PrivacyExtension.getAndroidInfo(context).setEmail(email);
+		return PrivacyExtension.getAndroidContext(context).setEmail(email);
 	}
 
 	public AndroidAuth getAndroidAuth() {
