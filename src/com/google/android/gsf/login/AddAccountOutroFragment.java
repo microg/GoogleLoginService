@@ -21,10 +21,9 @@ public class AddAccountOutroFragment extends LoginFragment {
 		super.onActivityCreated(savedInstanceState);
 		getContainer().hideBackButton();
 		getContainer().showOkButton();
-		final String email = getContainer().getOptions().getString(
-				AccountManager.KEY_ACCOUNT_NAME);
-		txt.setText(Html.fromHtml(getString(R.string.add_account_outro)
-				.replace("$m", highlightStart + email + highlightEnd)));
+		final String email = getContainer().getOptions().getString(AccountManager.KEY_ACCOUNT_NAME);
+		txt.setText(Html.fromHtml(
+				getString(R.string.add_account_outro).replace("$m", highlightStart + email + highlightEnd)));
 	}
 
 	@Override
@@ -33,8 +32,8 @@ public class AddAccountOutroFragment extends LoginFragment {
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater,
-			final ViewGroup container, final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+							 final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.add_account_outro, null);
 		txt = (TextView) view.findViewById(R.id.txt_info);
 		return view;

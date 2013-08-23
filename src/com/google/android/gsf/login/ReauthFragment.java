@@ -32,8 +32,8 @@ public class ReauthFragment extends UsernamePasswordFragment {
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater,
-			final ViewGroup container, final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+							 final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.reauth, null);
 		emailEdit = (EditText) view.findViewById(R.id.edit_email);
 		emailEdit.addTextChangedListener(this);

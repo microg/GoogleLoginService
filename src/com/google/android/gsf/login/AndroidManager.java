@@ -7,10 +7,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
-
-import com.google.android.AndroidAuth.AuthType;
-import com.google.android.AndroidInfo;
+import com.google.android.AndroidAuth;
+import com.google.android.AndroidContext;
 import com.google.android.gsf.PrivacyExtension;
+import com.google.auth.AuthType;
 import com.google.tools.SignatureTools;
 
 public class AndroidManager {
@@ -21,10 +21,10 @@ public class AndroidManager {
 	public static final String KEY_AUTH_TYPE = "authTokenType";
 	private static final String TAG = "AndroidManager";
 
-	public static String getAuthTokenStore(final String service, final int uid,
-			final String packageName, final String packageSignature) {
-		if (service.equals("SID") || service.equals("LSID")
-				|| service.equals("android") || service.equals("androidsecure")) {
+	public static String getAuthTokenStore(final String service, final int uid, final String packageName,
+										   final String packageSignature) {
+		if (service.equals("SID") || service.equals("LSID") || service.equals("android") ||
+			service.equals("androidsecure")) {
 			return service;
 		}
 		return packageSignature + ":" + service;
@@ -39,9 +39,8 @@ public class AndroidManager {
 	private final PackageManager packageManager;
 	private final String type;
 
-	public AndroidManager(final AccountManager accountManager,
-			final PackageManager packageManager, final String type,
-			final Context context) {
+	public AndroidManager(final AccountManager accountManager, final PackageManager packageManager, final String type,
+						  final Context context) {
 		this.accountManager = accountManager;
 		this.packageManager = packageManager;
 		this.type = type;
@@ -49,16 +48,13 @@ public class AndroidManager {
 	}
 
 	public AndroidManager(final Context context) {
-		this(AccountManager.get(context), context.getPackageManager(), context
-				.getString(R.string.account_type), context);
+		this(AccountManager.get(context), context.getPackageManager(), context.getString(R.string.account_type),
+			 context);
 	}
 
-	public void addAccount(final String email, final String auth,
-			AuthType authType) {
-		accountManager.addAccountExplicitly(new Account(email, type),
-				auth, new Bundle());
-		accountManager.setUserData(findAccount(email), KEY_AUTH_TYPE,
-				authType.toInt() + "");
+	public void addAccount(final String email, final String auth, AuthType authType) {
+		accountManager.addAccountExplicitly(new Account(email, type), auth, new Bundle());
+		accountManager.setUserData(findAccount(email), KEY_AUTH_TYPE, authType.toInt() + "");
 	}
 
 	public void addOrUpdateAccount(final String email, final String auth, AuthType authType) {
@@ -77,8 +73,7 @@ public class AndroidManager {
 
 	public AuthType getAuthType(Account account) {
 		try {
-			return AuthType.fromInt(Integer.parseInt(accountManager
-					.getUserData(account, KEY_AUTH_TYPE)));
+			return AuthType.fromInt(Integer.parseInt(accountManager.getUserData(account, KEY_AUTH_TYPE)));
 		} catch (NumberFormatException e) {
 			return AuthType.MasterToken;
 		}
@@ -94,27 +89,21 @@ public class AndroidManager {
 		return null;
 	}
 
-	public String getAuthToken(final String service, final int uid,
-			final Account account) {
+	public String getAuthToken(final String service, final int uid, final Account account) {
 		final String packageName = getPackageNameForUid(uid);
 		final String packageSignature = getFirstPackageSignatureDigest(packageName);
-		return getAuthToken(service, uid, packageName, packageSignature,
-				account);
+		return getAuthToken(service, uid, packageName, packageSignature, account);
 	}
 
-	public String getAuthToken(final String service, final int uid,
-			final String packageName, final String packageSignature,
-			final Account account) {
-		return accountManager.peekAuthToken(account,
-				getAuthTokenStore(service, uid, packageName, packageSignature));
+	public String getAuthToken(final String service, final int uid, final String packageName,
+							   final String packageSignature, final Account account) {
+		return accountManager.peekAuthToken(account, getAuthTokenStore(service, uid, packageName, packageSignature));
 	}
 
 	public String getFirstPackageSignatureDigest(final String packageName) {
 		try {
-			final PackageInfo info = packageManager.getPackageInfo(packageName,
-					PackageManager.GET_SIGNATURES);
-			if (info != null && info.signatures != null
-					&& info.signatures.length > 0) {
+			final PackageInfo info = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
+			if (info != null && info.signatures != null && info.signatures.length > 0) {
 				for (final Signature sig : info.signatures) {
 					final String digest = signatureDigest(sig);
 					if (digest != null) {
@@ -149,19 +138,20 @@ public class AndroidManager {
 		throw null;
 	}
 
-	public void putAuthToken(final String service, final int uid,
-			final String packageName, final String packageSignature,
-			final String authToken, final Account account) {
+	public void putAuthToken(final String service, final int uid, final String packageName,
+							 final String packageSignature, final String authToken, final Account account) {
 		if (!service.startsWith("weblogin:") && uid != 0) {
-			accountManager.setAuthToken(
-					account,
-					getAuthTokenStore(service, uid, packageName,
-							packageSignature), authToken);
+			accountManager
+					.setAuthToken(account, getAuthTokenStore(service, uid, packageName, packageSignature), authToken);
 		}
 	}
 
-	public AndroidInfo getAndroidInfo(String email) {
+	public AndroidContext getAndroidContext(String email) {
 		return PrivacyExtension.getAndroidInfo(context).setEmail(email);
+	}
+
+	public AndroidAuth getAndroidAuth() {
+		return new AndroidAuth();
 	}
 
 }

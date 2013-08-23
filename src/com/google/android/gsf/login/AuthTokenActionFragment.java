@@ -5,11 +5,8 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
-
-import com.google.android.AndroidAuth;
 import com.google.auth.DataField;
 import com.google.auth.DataMapReader;
-import com.google.tools.Client;
 
 public class AuthTokenActionFragment extends ActionFragment {
 
@@ -21,47 +18,38 @@ public class AuthTokenActionFragment extends ActionFragment {
 			final int uid = Integer.parseInt(params[1]);
 			final String service = params[2];
 			boolean forcePermission = Boolean.parseBoolean(params[3]);
-			Log.d(TAG, uid + " asks for permission to " + service
-					+ " using user " + email
-					+ (forcePermission ? " (forced)" : ""));
-			final AndroidManager androidManager = new AndroidManager(
-					getActivity());
+			Log.d(TAG, uid + " asks for permission to " + service + " using user " + email +
+					   (forcePermission ? " (forced)" : ""));
+			final AndroidManager androidManager = new AndroidManager(getActivity());
 			final Account account = androidManager.findAccount(email);
 			final String packageName = androidManager.getPackageNameForUid(uid);
-			final String packageSignature = androidManager
-					.getFirstPackageSignatureDigest(packageName);
-			String authToken = androidManager.getAuthToken(service, uid,
-					packageName, packageSignature, account);
+			final String packageSignature = androidManager.getFirstPackageSignatureDigest(packageName);
+			String authToken = androidManager.getAuthToken(service, uid, packageName, packageSignature, account);
 			if (authToken == null || forcePermission) {
 				if (service.startsWith("weblogin:") && !forcePermission) {
 					return Activity.RESULT_CANCELED;
 				}
-				Client.DEBUG = true;
-				final DataMapReader map = AndroidAuth.getAuthTokenResponse(
-						androidManager.getAndroidInfo(email),
-						androidManager.getAuth(account), service, packageName,
-						packageSignature, forcePermission,
-						androidManager.getAuthType(account));
+				final DataMapReader map = androidManager.getAndroidAuth()
+														.getAuthTokenResponse(androidManager.getAndroidContext(email),
+																			  androidManager.getAuth(account), service,
+																			  packageName, packageSignature,
+																			  forcePermission,
+																			  androidManager.getAuthType(account));
 				authToken = map.getData(DataField.AUTH_TOKEN);
-				Client.DEBUG = false;
 				if (authToken == null) {
 					return Activity.RESULT_CANCELED;
 				}
 				final String sid = map.getData(DataField.SID);
 				if (sid != null && !sid.isEmpty()) {
-					androidManager.putAuthToken("SID", uid, packageName,
-							packageSignature, sid, account);
+					androidManager.putAuthToken("SID", uid, packageName, packageSignature, sid, account);
 				}
 				final String lsid = map.getData(DataField.LSID);
 				if (lsid != null && !lsid.isEmpty()) {
-					androidManager.putAuthToken("LSID", uid, packageName,
-							packageSignature, lsid, account);
+					androidManager.putAuthToken("LSID", uid, packageName, packageSignature, lsid, account);
 				}
-				androidManager.putAuthToken(service, uid, packageName,
-						packageSignature, authToken, account);
+				androidManager.putAuthToken(service, uid, packageName, packageSignature, authToken, account);
 			}
-			getContainer().getOptions().putString(AccountManager.KEY_AUTHTOKEN,
-					authToken);
+			getContainer().getOptions().putString(AccountManager.KEY_AUTHTOKEN, authToken);
 			return Activity.RESULT_OK;
 		}
 
@@ -69,12 +57,12 @@ public class AuthTokenActionFragment extends ActionFragment {
 		protected void onPostExecute(final Integer result) {
 			super.onPostExecute(result);
 			switch (result) {
-			case Activity.RESULT_OK:
-				onNextPressed();
-				break;
-			default:
-				onBackPressed();
-				break;
+				case Activity.RESULT_OK:
+					onNextPressed();
+					break;
+				default:
+					onBackPressed();
+					break;
 			}
 		}
 	}
@@ -106,16 +94,10 @@ public class AuthTokenActionFragment extends ActionFragment {
 	@Override
 	protected void startAction() {
 		task = new ActionTask();
-		final String email = getContainer().getOptions().getString(
-				AccountManager.KEY_ACCOUNT_NAME);
-		final String service = getContainer().getOptions().getString(
-				AndroidManager.KEY_AUTH_TOKEN_TYPE);
-		final String callerUid = getContainer().getOptions().getInt(
-				AccountManager.KEY_CALLER_UID, 0)
-				+ "";
-		final String force = getContainer().getOptions().getBoolean(
-				AndroidManager.KEY_FORCE_PERMISSION, false)
-				+ "";
+		final String email = getContainer().getOptions().getString(AccountManager.KEY_ACCOUNT_NAME);
+		final String service = getContainer().getOptions().getString(AndroidManager.KEY_AUTH_TOKEN_TYPE);
+		final String callerUid = getContainer().getOptions().getInt(AccountManager.KEY_CALLER_UID, 0) + "";
+		final String force = getContainer().getOptions().getBoolean(AndroidManager.KEY_FORCE_PERMISSION, false) + "";
 		task.execute(email, callerUid, service, force);
 	}
 

@@ -23,8 +23,8 @@ public class AddAccountIntroFragment extends LoginFragment {
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater,
-			final ViewGroup container, final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+							 final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.add_account_intro, null);
 		return view;
 	}

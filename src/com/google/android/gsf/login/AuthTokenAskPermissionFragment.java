@@ -30,12 +30,9 @@ public class AuthTokenAskPermissionFragment extends LoginFragment {
 		super.onActivityCreated(savedInstanceState);
 		getContainer().showAllowButton();
 		getContainer().showDenyButton();
-		final String account = getContainer().getOptions().getString(
-				AccountManager.KEY_ACCOUNT_NAME);
-		final String service = getContainer().getOptions()
-				.getString(AndroidManager.KEY_AUTH_TOKEN_TYPE).split(":")[0];
-		final int uid = getContainer().getOptions().getInt(
-				AccountManager.KEY_CALLER_UID);
+		final String account = getContainer().getOptions().getString(AccountManager.KEY_ACCOUNT_NAME);
+		final String service = getContainer().getOptions().getString(AndroidManager.KEY_AUTH_TOKEN_TYPE).split(":")[0];
+		final int uid = getContainer().getOptions().getInt(AccountManager.KEY_CALLER_UID);
 
 		CharSequence app = null;
 		Drawable icon = null;
@@ -46,8 +43,7 @@ public class AuthTokenAskPermissionFragment extends LoginFragment {
 			for (final String pkg : packages) {
 				if (pkg != null && !pkg.isEmpty()) {
 					try {
-						final ApplicationInfo info = pm.getApplicationInfo(pkg,
-								0);
+						final ApplicationInfo info = pm.getApplicationInfo(pkg, 0);
 						if (info != null) {
 							app = info.loadLabel(pm);
 							icon = info.loadIcon(pm);
@@ -79,8 +75,8 @@ public class AuthTokenAskPermissionFragment extends LoginFragment {
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater,
-			final ViewGroup container, final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+							 final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.ask_auth_token, null);
 		appTxt = (TextView) view.findViewById(R.id.txt_app);
 		accountTxt = (TextView) view.findViewById(R.id.txt_account);
@@ -93,8 +89,7 @@ public class AuthTokenAskPermissionFragment extends LoginFragment {
 
 	@Override
 	public void onNextPressed() {
-		getContainer().getOptions().putBoolean(
-				AndroidManager.KEY_FORCE_PERMISSION, true);
+		getContainer().getOptions().putBoolean(AndroidManager.KEY_FORCE_PERMISSION, true);
 		getContainer().goAuthTokenAction();
 	}
 

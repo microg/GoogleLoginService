@@ -13,8 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class LoginActivity extends FragmentActivity implements
-		LoginFragmentContainer, OnClickListener {
+public class LoginActivity extends FragmentActivity implements LoginFragmentContainer, OnClickListener {
 
 	public static final int LOGIN_ACTION_ADD_ACCOUNT = 1;
 	public static final int LOGIN_ACTION_AUTH_TOKEN = 2;
@@ -78,8 +77,7 @@ public class LoginActivity extends FragmentActivity implements
 	}
 
 	private void goFragment(final LoginFragment fragment) {
-		fragmentManager.beginTransaction().replace(R.id.container, fragment)
-				.commit();
+		fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
 		activeFragment = fragment;
 	}
 
@@ -144,32 +142,29 @@ public class LoginActivity extends FragmentActivity implements
 
 	private void parseOptions() {
 		if (options.containsKey(AndroidManager.KEY_LOGIN_ACTION)) {
-			final int action = options.getInt(AndroidManager.KEY_LOGIN_ACTION,
-					LOGIN_ACTION_ADD_ACCOUNT);
+			final int action = options.getInt(AndroidManager.KEY_LOGIN_ACTION, LOGIN_ACTION_ADD_ACCOUNT);
 			switch (action) {
-			case LOGIN_ACTION_ADD_ACCOUNT:
-				setTitle(R.string.activity_login_title);
-				goAddAccountIntro();
-				break;
-			case LOGIN_ACTION_AUTH_TOKEN:
-				setTitle(R.string.activity_permission_title);
-				goAuthTokenAction();
-				break;
-			default:
-				Log.w(TAG, "Unknown loginAction: " + action);
-				finish();
-				break;
+				case LOGIN_ACTION_ADD_ACCOUNT:
+					setTitle(R.string.activity_login_title);
+					goAddAccountIntro();
+					break;
+				case LOGIN_ACTION_AUTH_TOKEN:
+					setTitle(R.string.activity_permission_title);
+					goAuthTokenAction();
+					break;
+				default:
+					Log.w(TAG, "Unknown loginAction: " + action);
+					finish();
+					break;
 			}
 		}
 	}
 
 	@Override
 	public void resultAccountAdded() {
-		if (getOptions().containsKey(
-				AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)) {
-			final AccountAuthenticatorResponse response = getOptions()
-					.getParcelable(
-							AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+		if (getOptions().containsKey(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)) {
+			final AccountAuthenticatorResponse response =
+					getOptions().getParcelable(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
 			if (response != null) {
 				response.onResult(null);
 			}
@@ -181,11 +176,9 @@ public class LoginActivity extends FragmentActivity implements
 	public void resultAuthToken() {
 		final Intent intent = new Intent();
 		intent.putExtras(getOptions());
-		if (getOptions().containsKey(
-				AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)) {
-			final AccountAuthenticatorResponse response = getOptions()
-					.getParcelable(
-							AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+		if (getOptions().containsKey(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)) {
+			final AccountAuthenticatorResponse response =
+					getOptions().getParcelable(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
 			if (response != null) {
 				response.onResult(intent.getExtras());
 			}
@@ -195,11 +188,9 @@ public class LoginActivity extends FragmentActivity implements
 
 	@Override
 	public void resultCancelled() {
-		if (getOptions().containsKey(
-				AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)) {
-			final AccountAuthenticatorResponse response = getOptions()
-					.getParcelable(
-							AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+		if (getOptions().containsKey(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)) {
+			final AccountAuthenticatorResponse response =
+					getOptions().getParcelable(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
 			if (response != null) {
 				response.onError(400, "Cancelled.");
 			}

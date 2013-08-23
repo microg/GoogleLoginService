@@ -9,8 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-public class UsernamePasswordFragment extends LoginFragment implements
-		TextWatcher {
+public class UsernamePasswordFragment extends LoginFragment implements TextWatcher {
 
 	@SuppressWarnings("unused")
 	private static final String TAG = "GoogleUsernamePassword";
@@ -30,14 +29,12 @@ public class UsernamePasswordFragment extends LoginFragment implements
 	}
 
 	@Override
-	public void beforeTextChanged(final CharSequence s, final int start,
-			final int count, final int after) {
+	public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
 		// Nothing...
 	}
 
 	protected boolean checkInput() {
-		return (email != null && email.contains("@") && password != null && !password
-				.isEmpty());
+		return (email != null && email.contains("@") && password != null && !password.isEmpty());
 	}
 
 	@Override
@@ -63,8 +60,8 @@ public class UsernamePasswordFragment extends LoginFragment implements
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater,
-			final ViewGroup container, final Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+							 final Bundle savedInstanceState) {
 		final View view = inflater.inflate(R.layout.username_password, null);
 		emailEdit = (EditText) view.findViewById(R.id.edit_email);
 		emailEdit.addTextChangedListener(this);
@@ -85,8 +82,7 @@ public class UsernamePasswordFragment extends LoginFragment implements
 	}
 
 	@Override
-	public void onTextChanged(final CharSequence s, final int start,
-			final int before, final int count) {
+	public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
 		// Nothing...
 	}
 
