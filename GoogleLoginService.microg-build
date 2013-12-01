@@ -1,0 +1,3 @@
+build_typeops="aapt-package javac dex pack-apk sign-apk"
+libs_use="protobuf-micro JGoogle GoogleServicesFrameworkIncludes android-support-v4"
+libs_inc="protobuf-micro JGoogle GoogleServicesFrameworkIncludes android-support-v4"
