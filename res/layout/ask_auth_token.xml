@@ -27,7 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
-            android:text=""
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
@@ -54,7 +53,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
-            android:text=""
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
@@ -81,7 +79,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
-            android:text=""
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 

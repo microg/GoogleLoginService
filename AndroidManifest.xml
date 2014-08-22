@@ -70,6 +70,14 @@
         </service>
 
         <activity
+            android:name="org.microg.login.AddAccountActivity"
+            android:excludeFromRecents="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="org.microg.login.ADD_ACCOUNT" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name="com.google.android.gsf.loginservice.GrantCredentialsPermissionActivity"
             android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"
